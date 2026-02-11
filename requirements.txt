@@ -1,0 +1,7 @@
+# Core dependencies for Spool File Generator v2
+pdfplumber>=0.10.0      # PDF text extraction
+pandas>=2.0.0           # Excel/CSV data handling
+openpyxl>=3.0.0         # Excel file support (.xlsx)
+PyMuPDF>=1.24.0         # Digital signature detection (fitz module)
+pyinstaller>=6.0.0      # Create standalone .exe
+Pillow>=10.0.0         # Image handling
