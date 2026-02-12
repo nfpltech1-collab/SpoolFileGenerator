@@ -86,14 +86,13 @@ class SpoolAppView:
 
     def _create_widgets(self):
         # === HEADER SECTION (Logo & Title) ===
-        header_frame = ttk.Frame(self.root, padding="10 10 10 0")
+        header_frame = ttk.Frame(self.root, padding="10 15 10 15")
         header_frame.pack(fill=tk.X)
         
-        header_frame.columnconfigure(0, weight=1)
-        header_frame.columnconfigure(1, weight=2)
-        header_frame.columnconfigure(2, weight=1)
+        # Set minimum height for header frame
+        header_frame.configure(height=60)
         
-        # 1. Logo
+        # 1. Logo (packed to the left)
         try:
             # Locate logo in project root (3 levels up from this file)
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -101,7 +100,7 @@ class SpoolAppView:
             
             if os.path.exists(logo_path):
                 pil_image = Image.open(logo_path)
-                # Resize to Height = 40px
+                # Resize to Height = 20px
                 h_size = 20
                 aspect = pil_image.width / pil_image.height
                 w_size = int(h_size * aspect)
@@ -109,18 +108,21 @@ class SpoolAppView:
                 self.logo_img = ImageTk.PhotoImage(pil_image)
                 
                 logo_label = ttk.Label(header_frame, image=self.logo_img, background='#ffffff')
-                logo_label.grid(row=0, column=0, rowspan=2, sticky=tk.W, padx=10)
+                logo_label.pack(side=tk.LEFT, padx=10, pady=5)
             else:
-                ttk.Label(header_frame, text="[LOGO]", style="Header.TLabel").grid(row=0, column=0, rowspan=2, sticky=tk.W, padx=10)
+                ttk.Label(header_frame, text="[LOGO]", style="Header.TLabel").pack(side=tk.LEFT, padx=10, pady=5)
         except Exception as e:
             print(f"Logo load error: {e}")
             
-        # 2. Key Title
-        title_label = ttk.Label(header_frame, text="SPOOL FILE GENERATOR", style="Title.TLabel")
-        title_label.grid(row=0, column=1, sticky=tk.S)
+        # 2. Title & Subtitle (centered across full window width)
+        title_container = ttk.Frame(header_frame)
+        title_container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
         
-        subtitle_label = ttk.Label(header_frame, text="Nagarkot Forwarders Pvt Ltd", style="Subtitle.TLabel")
-        subtitle_label.grid(row=1, column=1, sticky=tk.N)
+        title_label = ttk.Label(title_container, text="SPOOL FILE GENERATOR", style="Title.TLabel")
+        title_label.pack(pady=(0, 2))
+        
+        subtitle_label = ttk.Label(title_container, text="Nagarkot Forwarders Pvt Ltd", style="Subtitle.TLabel")
+        subtitle_label.pack()
 
         # Main container with padding
         main_frame = ttk.Frame(self.root, padding="20")

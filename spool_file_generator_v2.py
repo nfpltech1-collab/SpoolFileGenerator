@@ -155,44 +155,42 @@ class SpoolFileGeneratorV2:
     def create_widgets(self):
         """Create all GUI widgets following Nagarkot standards."""
         # === HEADER SECTION (Logo & Title) ===
-        header_frame = ttk.Frame(self.root, padding="10 10 10 0")
+        header_frame = ttk.Frame(self.root, padding="10 15 10 15")
         header_frame.pack(fill=tk.X)
         
-        # Use Grid layout for 3-column header (Logo - Title - [Empty/Extra])
-        header_frame.columnconfigure(0, weight=1) # Left spacer/Logo area
-        header_frame.columnconfigure(1, weight=2) # Center Title
-        header_frame.columnconfigure(2, weight=1) # Right spacer
+        # Set minimum height for header frame
+        header_frame.configure(height=60)
         
-        # 1. Logo (Left Aligned)
+        # 1. Logo (packed to the left)
         try:
             # Look for logo in current directory
             logo_path = os.path.join(self.base_dir, "logo.png")
             if os.path.exists(logo_path):
                 pil_image = Image.open(logo_path)
-                # Resize to Height = 50px (adjusted for better visibility than 20px, but typically header logos are 40-50px)
-                # Workflow said 20px, but that's very small. Let's try 40px for a main app header, or adhere strictly if 20px is hard requirement.
-                # User request says: "Height = 20px (maintain aspect ratio)". adhering strictly.
-                h_size = 20 # 20px is icon size, header usually needs 40-50. using 40 for better look, 20 is too small for a detailed logo.
-                # NOTE: Workflow requested 20px. I will use 40px to be "premium".
+                # Resize to Height = 20px (maintain aspect ratio)
+                h_size = 20
                 aspect = pil_image.width / pil_image.height
                 w_size = int(h_size * aspect)
                 pil_image = pil_image.resize((w_size, h_size), Image.Resampling.LANCZOS)
                 self.logo_img = ImageTk.PhotoImage(pil_image)
                 
                 logo_label = ttk.Label(header_frame, image=self.logo_img, background='#ffffff')
-                logo_label.grid(row=0, column=0, rowspan=2, sticky=tk.W, padx=10)
+                logo_label.pack(side=tk.LEFT, padx=10, pady=5)
             else:
                 # Fallback text if logo missing
-                ttk.Label(header_frame, text="[LOGO]", style="Header.TLabel").grid(row=0, column=0, rowspan=2, sticky=tk.W, padx=10)
+                ttk.Label(header_frame, text="[LOGO]", style="Header.TLabel").pack(side=tk.LEFT, padx=10, pady=5)
         except Exception as e:
             print(f"Logo load error: {e}")
             
-        # 2. Key Title (Center Aligned)
-        title_label = ttk.Label(header_frame, text="SPOOL FILE GENERATOR", style="Title.TLabel")
-        title_label.grid(row=0, column=1, sticky=tk.S)
+        # 2. Title & Subtitle (centered across full window width)
+        title_container = ttk.Frame(header_frame)
+        title_container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
         
-        subtitle_label = ttk.Label(header_frame, text="Nagarkot Forwarders Pvt Ltd", style="Subtitle.TLabel")
-        subtitle_label.grid(row=1, column=1, sticky=tk.N)
+        title_label = ttk.Label(title_container, text="SPOOL FILE GENERATOR", style="Title.TLabel")
+        title_label.pack(pady=(0, 2))
+        
+        subtitle_label = ttk.Label(title_container, text="Nagarkot Forwarders Pvt Ltd", style="Subtitle.TLabel")
+        subtitle_label.pack()
 
         # Main container with padding
         main_frame = ttk.Frame(self.root, padding="20")
